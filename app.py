@@ -31,6 +31,7 @@ class SISApp(CollegeUI, ProgramUI, StudentUI, ctk.CTk):
 
         self.filtered_student_count = None
         self.filtered_program_count = None
+        self.filtered_college_count = None
 
         self.prog_filter_window = None
         self.stud_filter_window = None
@@ -54,6 +55,15 @@ class SISApp(CollegeUI, ProgramUI, StudentUI, ctk.CTk):
         self.program_filter_data = None
         self.program_current_sort = None
         self.program_current_reverse = False
+
+        self.college_current_page = 1
+        self.college_page_size = 10
+        self.college_total_pages = 1
+        self.college_total_count = 0
+        self.college_search_where = None
+        self.college_search_params = None
+        self.college_current_sort = None
+        self.college_current_reverse = False
 
         self.setup_college_ui()
         self.setup_program_ui()
@@ -105,8 +115,11 @@ class SISApp(CollegeUI, ProgramUI, StudentUI, ctk.CTk):
 
     def update_all_record_counts(self):
         if self.college_count_label:
-            count = len(dh.college_db.load_data('colleges'))
-            self.college_count_label.configure(text=f"Total Records: {count}")
+            total = len(dh.college_db.load_data('colleges'))
+            if self.filtered_college_count is not None:
+                self.college_count_label.configure(text=f"Showing: {self.filtered_college_count} / {total} records")
+            else:
+                self.college_count_label.configure(text=f"Total Records: {total}")
 
         if self.program_count_label:
             total = len(dh.program_db.load_data('programs'))
